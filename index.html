@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy — NextYou Content Pipeline</title>
+<title>NextYou Content Pipeline</title>
 <style>
   :root {
     --ink: #16181d;
@@ -11,6 +11,7 @@
     --rule: #e2e4e8;
     --paper: #fbfbfa;
     --accent: #2f4858;
+    --yt-red: #ff0000;
   }
   * { box-sizing: border-box; }
   body {
@@ -71,6 +72,34 @@
     font-size: 16px;
   }
   .callout p:last-child { margin-bottom: 0; }
+
+  .yt-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 0 0 16px;
+  }
+  .yt-badge svg { flex: none; }
+  .yt-badge-text { font-size: 14px; color: var(--muted); }
+  .yt-badge-text strong { color: var(--ink); display: block; font-size: 15px; margin-bottom: 2px; }
+  .yt-badge a { font-weight: 600; }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+  .links a {
+    font-weight: 600;
+  }
+
   footer {
     margin-top: 56px;
     padding-top: 24px;
@@ -78,10 +107,12 @@
     font-size: 14px;
     color: var(--muted);
   }
+  footer a { color: var(--muted); text-decoration: underline; }
   @media (max-width: 600px) {
     .wrap { padding: 40px 20px 72px; }
     h1 { font-size: 25px; }
     body { font-size: 16px; }
+    .yt-badge { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -89,48 +120,34 @@
 <div class="wrap">
 
 <header>
-  <p class="eyebrow">Privacy Policy</p>
+  <p class="eyebrow">Home</p>
   <h1>NextYou Content Pipeline</h1>
-  <p class="meta">Last updated: July 27, 2026 &nbsp;·&nbsp; Operated by Dong Yeop Lee, individual creator</p>
+  <p class="meta">Operated by Dong Yeop Lee, individual creator</p>
 </header>
 
 <div class="callout">
-  <p>NextYou Content Pipeline is a private, single-user tool used by its operator to publish original video content to the operator's own YouTube channel. It is not distributed, has no other users, and collects no personal data from anyone.</p>
+  <p>NextYou Content Pipeline is a private, single-user tool used by its operator to publish original video content to the operator's own YouTube channel. It is not distributed and has no other users.</p>
 </div>
 
-<h2>What this tool is</h2>
-<p>NextYou Content Pipeline is an automation workflow that I built and run for my own use. It assembles video content that I create — script, narration audio, and finished video — and, after I personally review and approve each item, uploads it to the YouTube channel I own and operate at <a href="https://www.youtube.com/@NextYouGlobal-i9w">https://www.youtube.com/@NextYouGlobal-i9w</a>.</p>
-<p>The tool runs on a private, self-hosted instance. There is no public interface, no sign-up, and no way for another person to access or use it.</p>
+<h2>What this is</h2>
+<p>This page is the public homepage for NextYou Content Pipeline, an automation workflow that assembles video content and, after personal review and approval, uploads it to the YouTube channel below.</p>
 
-<h2>Information collected</h2>
-<p>I do not collect, request, or receive personal information from any user, because there are no users other than me.</p>
-<p>Specifically, this tool does not:</p>
-<ul>
-  <li>Collect names, email addresses, or contact details from anyone;</li>
-  <li>Read, store, display, or redistribute YouTube data belonging to other channels, videos, or viewers;</li>
-  <li>Use cookies, analytics, tracking pixels, or advertising identifiers;</li>
-  <li>Sell, rent, or share any data with third parties.</li>
+<div class="yt-badge">
+  <svg width="36" height="26" viewBox="0 0 36 26" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect width="36" height="26" rx="7" fill="#FF0000"/>
+    <path d="M15 8.5L23 13L15 17.5V8.5Z" fill="#FFFFFF"/>
+  </svg>
+  <div class="yt-badge-text">
+    <strong>Developed using YouTube API Services</strong>
+    Uploads are published to <a href="https://www.youtube.com/@NextYouGlobal-i9w" target="_blank" rel="noopener">youtube.com/@NextYouGlobal-i9w</a>
+  </div>
+</div>
+
+<h2>Policies</h2>
+<ul class="links">
+  <li><a href="./privacy-policy.html">Privacy Policy</a></li>
+  <li><a href="./terms-of-service.html">Terms of Service</a></li>
 </ul>
-
-<h2>YouTube API Services</h2>
-<p>This tool uses YouTube API Services. By using it, I am subject to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>, and the handling of data by Google is described in the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
-<p>The only API method used is <code>videos.insert</code>, which uploads a video file to my own channel. No other YouTube API method is called, and no YouTube user data is retrieved.</p>
-
-<h2>Authorization and credentials</h2>
-<p>Access to my own YouTube channel is granted through Google OAuth, authorized by me for my own account. The resulting access and refresh tokens are stored in encrypted form within my private self-hosted workflow instance and are used only to upload videos to my channel.</p>
-<p>Tokens are never shared with any third party. I may revoke this access at any time through my Google Account permissions page at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>, which immediately ends the tool's access.</p>
-
-<h2>Data retention</h2>
-<p>The tool retains only the material needed for its own operation: the content I authored, the generated audio and video files, and a record of which items have been published. No third-party or viewer data is retained, because none is ever obtained. Stored OAuth tokens are deleted when access is revoked or when the workflow is removed.</p>
-
-<h2>Children's privacy</h2>
-<p>This tool is not directed to children and does not knowingly collect information from anyone, including children under 13.</p>
-
-<h2>Changes to this policy</h2>
-<p>If the tool's functionality changes in a way that affects this policy, this page will be updated and the date above revised.</p>
-
-<h2>Contact</h2>
-<p>Questions about this policy can be sent to <a href="mailto:dycorea7@gmail.com">dycorea7@gmail.com</a>.</p>
 
 <footer>
   NextYou Content Pipeline · Operated by an individual creator · Not affiliated with or endorsed by YouTube or Google.
