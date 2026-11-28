@@ -1,0 +1,81 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:#000;overflow:hidden}svg{display:block;font-family:'Noto Sans CJK KR','Noto Sans KR',sans-serif}</style>
+</head><body>
+<svg id="root" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="1080" viewBox="0 0 1920 1080"><g id="s"></g></svg>
+<script>
+const THEME = new URLSearchParams(location.search).get('theme') || 'channel';
+const TH = {
+ flat: {bg:'#F4EDE1',ink:'#1F2A44',text:'#1F2A44',fig:'#1F2A44',feat:'#1F2A44',chip:'#1F2A44',uni:'#1F2A44',big:'#1F2A44',coral:'#E8604C',mus:'#F2B33D',teal:'#2A9D8F',sky:'#CFE3E8',road:'#3B4256',soft:'#E6DCCB',white:'#FFFFFF',grey:'#8A8F9C',skin:'#F2C9A0'},
+ keynote: {bg:'#000',ink:'#F5F5F7',text:'#F5F5F7',fig:'#D1D1D6',feat:'#1C1C1E',chip:'#2C2C2E',uni:'#0A84FF',big:'#F5F5F7',coral:'#FF453A',mus:'#FFD60A',teal:'#30D158',sky:'#64D2FF',road:'#141416',soft:'#1F1F23',white:'#FFFFFF',grey:'#8E8E93',skin:'#E8C4A0'},
+ channel: {bg:'#0B0F1A',ink:'#FFFFFF',text:'#FFFFFF',fig:'#E3E8F2',feat:'#0B0F1A',chip:'#24304A',uni:'#3D6FD8',big:'#FFC23D',coral:'#FF5A5A',mus:'#FFC23D',teal:'#4FC3F7',sky:'#A9BDD8',road:'#141B2C',soft:'#1A2338',white:'#FFFFFF',grey:'#7C869C',skin:'#E8C4A0'}};
+TH.ai = Object.assign({}, TH.channel, {chip:'rgba(15,20,35,0.72)'});
+const C = TH[THEME] || TH.channel;
+const M = {};
+window.POST = null;
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const out = x => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+const back = x => { x = clamp(x); const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function BG() {
+  if (THEME === 'channel' || THEME === 'ai') return `<defs><radialGradient id="cb" cx="50%" cy="50%" r="75%"><stop offset="0" stop-color="#141B2E"/><stop offset="1" stop-color="#05070D"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#cb)"/>`;
+  if (THEME === 'keynote') return `<defs><radialGradient id="kb" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#1d1d22"/><stop offset="1" stop-color="#000"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#kb)"/>`;
+  return `<rect width="1920" height="1080" fill="${C.bg}"/><circle cx="1700" cy="160" r="260" fill="${C.soft}" opacity=".5"/><circle cx="160" cy="980" r="200" fill="${C.soft}" opacity=".5"/>`;
+}
+function TAG() { return (THEME === 'flat' ? `<rect x="28" y="22" width="176" height="104" rx="18" fill="#1F2A44"/>` : '') + `<g opacity=".95"><image href="logo.png" x="40" y="32" height="84" width="149" preserveAspectRatio="xMinYMid meet"/></g>`; }
+function T(x, y, txt, size = 40, col, w = 700, anchor = 'middle', o = 1) {
+  col = col || C.text;
+  return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" font-weight="${w}" fill="${col}" opacity="${o}">${esc(txt)}</text>`;
+}
+function card(x, y, w, h, fill, o = 1, rx = 24) { return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill || C.soft}" opacity="${o}"/>`; }
+function chip(x, y, label, col, o = 1, s = 1) {
+  const w = String(label).length * 34 + 56;
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><rect x="${-w / 2}" y="-34" width="${w}" height="68" rx="34" fill="${col}"/><text x="0" y="13" text-anchor="middle" font-size="36" font-weight="700" fill="#fff">${esc(label)}</text></g>`;
+}
+function source(txt, o = 1) { return `<text x="1860" y="60" text-anchor="end" font-size="24" fill="${C.grey}" opacity="${o}">${esc(txt)}</text>`; }
+function title(txt, o = 1, y = 200) { return T(960, y, txt, 64, C.text, 900, 'middle', o); }
+function arrowR(x1, y, x2, col, o = 1, w = 8) { col = col || C.grey; return `<g opacity="${o}"><line x1="${x1}" y1="${y}" x2="${x2 - 18}" y2="${y}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/><path d="M${x2} ${y} l-30 -20 l0 40 z" fill="${col}"/></g>`; }
+function cross(x, y, s = 1, col, o = 1) { col = col || C.coral; return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><line x1="-40" y1="-40" x2="40" y2="40" stroke="${col}" stroke-width="16" stroke-linecap="round"/><line x1="40" y1="-40" x2="-40" y2="40" stroke="${col}" stroke-width="16" stroke-linecap="round"/></g>`; }
+function check(x, y, s = 1, col, o = 1) { col = col || C.teal; return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><path d="M-40 0 L-10 30 L45 -35" stroke="${col}" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`; }
+// robot: x,y = feet centre, ~300px tall at s=1
+function robot(x, y, s = 1, o = 1, col) {
+  col = col || C.sky;
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><rect x="-70" y="-190" width="140" height="130" rx="30" fill="${col}"/><rect x="-50" y="-60" width="100" height="60" rx="16" fill="${col}"/>
+  <rect x="-52" y="-160" width="104" height="60" rx="20" fill="${C.road}"/><circle cx="-22" cy="-130" r="11" fill="${C.teal}"/><circle cx="22" cy="-130" r="11" fill="${C.teal}"/>
+  <line x1="0" y1="-190" x2="0" y2="-225" stroke="${col}" stroke-width="8"/><circle cx="0" cy="-232" r="12" fill="${C.mus}"/>
+  <rect x="-96" y="-150" width="22" height="70" rx="11" fill="${col}"/><rect x="74" y="-150" width="22" height="70" rx="11" fill="${col}"/></g>`;
+}
+function monitor(x, y, s = 1, o = 1) {
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><rect x="-150" y="-100" width="300" height="190" rx="16" fill="${C.fig}"/><rect x="-134" y="-86" width="268" height="160" rx="8" fill="${C.road}"/>
+  ${[0, 1, 2, 3].map(i => `<rect x="-110" y="${-66 + i * 34}" width="${200 - i * 30}" height="14" rx="7" fill="${C.teal}" opacity=".7"/>`).join('')}<rect x="-20" y="90" width="40" height="40" fill="${C.fig}"/><rect x="-80" y="126" width="160" height="16" rx="8" fill="${C.fig}"/></g>`;
+}
+// person: x,y = feet centre, ~260px tall at s=1
+function person(x, y, s = 1, col, o = 1) {
+  col = col || C.mus;
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o}"><rect x="-42" y="-170" width="84" height="120" rx="34" fill="${col}"/><rect x="-36" y="-60" width="30" height="60" rx="12" fill="${C.fig}"/><rect x="6" y="-60" width="30" height="60" rx="12" fill="${C.fig}"/><circle cx="0" cy="-210" r="40" fill="${C.skin}"/><path d="M-42 -218 Q0 -268 42 -218 Q30 -240 0 -244 Q-30 -240 -42 -218Z" fill="#2B2B33"/></g>`;
+}
+
+function chapterCard(t, lead, kicker, text) {
+  const a = out(seg(t, 0, 0.5)) * (1 - seg(t, lead - 0.45, lead));
+  const lines = String(text).split('\n');
+  const y0 = 540 - (lines.length - 1) * 60;
+  const ln = ease(seg(t, 0.3, 1.0));
+  return `<g opacity="${a}">${T(960, y0 - 120, kicker, 46, C.mus, 900)}${lines.map((l, i) => T(960, y0 + i * 120, l, 104, C.text, 900)).join('')}<rect x="${960 - 90 * ln}" y="${y0 + (lines.length - 1) * 120 + 60}" width="${180 * ln}" height="8" rx="4" fill="${C.mus}"/></g>`;
+}
+window.drawKey = (key, t, d, lead = 0, kicker = '', text = '') => {
+  let body = '';
+  if (lead > 0 && t < lead) body = chapterCard(t, lead, kicker, text);
+  else { const f = M[key]; if (!f) throw new Error('no scene ' + key); body = f(t - lead, d - lead); }
+  document.getElementById('s').innerHTML = BG() + `<g id="sc">${body}</g>` + TAG();
+  if (window.POST) window.POST(t);
+};
+window.drawHook = (i, t, d) => { document.getElementById('s').innerHTML = BG() + `<g id="sc">${window.AIO(i, t, d)}</g>` + TAG(); };
+</script>
+<script>document.write('<script src="' + (new URLSearchParams(location.search).get('js') || 'scenes.js') + '"><\/script>');</script>
+</body></html>
